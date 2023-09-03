@@ -2,9 +2,10 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, O
 import { IPDFViewerApplication, NgxExtendedPdfViewerComponent, PDFNotificationService, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 import { Subject, takeUntil } from 'rxjs';
 import { PdfToolbarCustom } from './pdf-toolbar/toolbar/bravo.toolbar.custom';
+
 import { BravoPdfSignatureTool } from './pdf-toolbar/tools';
-import { BravoPDFToolsNotificationService } from './shared/services/bravoPdfTool.notification.service';
 import { BravoNameEventBusCustom } from './shared/events';
+import { BravoPDFToolsNotificationService } from './shared/services/bravoPdfTool.notification.service';
 pdfDefaultOptions.assetsFolder = 'bleeding-edge';
 @Component({
   selector: 'bravo-pdf-webViewer',
@@ -44,6 +45,12 @@ export class BravoPdfWebViewer implements OnInit, AfterViewInit, OnDestroy {
   public ngOnDestroy(): void {
     this._unSubObservablesSubject.next();
     if (!this._unSubObservablesSubject.closed) this._unSubObservablesSubject.unsubscribe();
+
+    window.removeEventListener('mousedown', this._onHandleWindowMouseDown);
+
+    if (this.pdfViewerApp) {
+      //remove event bus
+    }
   }
 
   //*event here:
@@ -51,17 +58,20 @@ export class BravoPdfWebViewer implements OnInit, AfterViewInit, OnDestroy {
   //*method here:
   public onPdfJsInit() {
     //*do something when pdfjs init
-    window.addEventListener('mousedown', (event: MouseEvent) => {
-      this.pdfViewerApp = (window as any).PDFViewerApplication;
-      this.pdfViewerApp.eventBus.dispatch(BravoNameEventBusCustom.widowMouseDown, {
-        source: this,
-        value: event.target
-      })
-    })
+    this.pdfViewerApp = (window as any).PDFViewerApplication;
+    window.addEventListener('mousedown', this._onHandleWindowMouseDown);
   }
 
   public toolbarCustomInitialized(sender: PdfToolbarCustom): void {
     this.toolbar = sender;
     this.toolbar.showSelectToolButton = false;
+  }
+
+  private _onHandleWindowMouseDown = this._handleWindowMouseDown.bind(this);
+  private _handleWindowMouseDown(event: MouseEvent): void {
+    this.pdfViewerApp && this.pdfViewerApp.eventBus.dispatch(BravoNameEventBusCustom.widowMouseDown, {
+      source: this,
+      event: event
+    })
   }
 }

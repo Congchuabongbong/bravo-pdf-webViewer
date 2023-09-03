@@ -1,5 +1,5 @@
 
-export type MouseDownEvent<S> = {
-  source: S,
+export type WindowMouseDownEvent = {
+  source: unknown,
   event: MouseEvent
 }

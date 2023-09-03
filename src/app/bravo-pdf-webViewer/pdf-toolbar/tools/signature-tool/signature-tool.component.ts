@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IPDFViewerApplication, PDFNotificationService } from 'ngx-extended-pdf-viewer';
 import { BravoDrawingApp, CanvasSource } from 'src/app/bravo-pdf-webViewer/shared/components/drawing-app/drawing-app.component';
+import { EAnnotationEditorParamsType } from 'src/app/bravo-pdf-webViewer/shared/data-type';
 import { BravoNameEventBusCustom, SavedEditorStampEvent } from 'src/app/bravo-pdf-webViewer/shared/events';
 
 @Component({
@@ -57,11 +58,9 @@ export class BravoPdfSignatureTool implements OnInit, AfterViewInit, OnDestroy {
       this.pdfViewerApp = (window as any).PDFViewerApplication;
       createImageBitmap(pPayload.asBlob).then((bitmap) => {
         this.pdfViewerApp.eventBus.dispatch('switchannotationeditorparams', {
-          type: 2,
+          type: EAnnotationEditorParamsType.CREATE,
           value: bitmap
         });
-
-
         const _payload = {
           source: this,
           value: pPayload.asUrl

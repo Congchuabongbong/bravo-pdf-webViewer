@@ -1,4 +1,4 @@
 export type SavedEditorStampEvent = {
   source: unknown,
-  value: string
+  value: string | ImageBitmap;
 }

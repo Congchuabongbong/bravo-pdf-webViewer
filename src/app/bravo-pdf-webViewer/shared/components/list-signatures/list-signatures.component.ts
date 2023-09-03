@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDe
 import { IPDFViewerApplication, PDFNotificationService } from 'ngx-extended-pdf-viewer';
 import { BehaviorSubject, Subject, of, switchMap, takeUntil } from 'rxjs';
 import { BravoNameEventBusCustom, SavedEditorStampEvent } from '../../events';
+import { EAnnotationEditorParamsType } from '../../data-type';
 
 const _fakeSource = 'https://api.slingacademy.com/v1/sample-data/photos?limit=10';
 @Component({
@@ -52,7 +53,6 @@ export class BravoListSignatures implements OnInit, OnDestroy {
 
   private _onPdfJsInit() {
     this.pdfViewerApp = (window as any).PDFViewerApplication;
-    console.warn(this.onSavedStampEditor);
     this.pdfViewerApp.eventBus.on(BravoNameEventBusCustom.savedStampEditor, this.onSavedStampEditor);
   }
 
@@ -63,23 +63,36 @@ export class BravoListSignatures implements OnInit, OnDestroy {
   public onSavedStampEditor = this._handleSavedStampEditor.bind(this);
   private _handleSavedStampEditor({ value }: SavedEditorStampEvent) {
     console.warn(value);
-    this.addSignatureToList(value)
+    //?case base 64
+    if (typeof value === 'string')
+      this.addSignatureToList(value)
+    else if (value instanceof ImageBitmap) { //?bitmap
+      const _zBase64Str = this._getSrcImageFromImageBitmap(value);
+      console.warn(_zBase64Str);
+      this.addSignatureToList(_zBase64Str);
+    }
   }
 
   public onClickAddSignatureBtn(pImgEl: HTMLImageElement) {
-    console.warn(pImgEl);
     if (this.pdfViewerApp) {
-      // createImageBitmap(pImgEl).then(bitmap => {
-      //   // this.pdfViewerApp.eventBus.dispatch('switchannotationeditorparams', {
-      //   //   type: 2,
-      //   //   value: bitmap
-      //   // });
-      // })
-
-      this.pdfViewerApp.eventBus.dispatch('switchannotationeditorparams', {
-        type: 2,
-        value: pImgEl
+      createImageBitmap(pImgEl).then(bitmap => {
+        this.pdfViewerApp.eventBus.dispatch('switchannotationeditorparams', {
+          type: EAnnotationEditorParamsType.CREATE,
+          value: bitmap
+        });
       });
     }
+  }
+
+  private _getSrcImageFromImageBitmap(pValue: ImageBitmap) {
+    const canvas = document.createElement("canvas");
+    canvas.width = pValue.width;
+    canvas.height = pValue.height;
+    canvas.style.visibility = "hidden";
+    const context = canvas.getContext("2d");
+    context && context.drawImage(pValue, 0, 0);
+    const zSrcImg = canvas.toDataURL();
+    canvas.remove();
+    return zSrcImg;
   }
 }

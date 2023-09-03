@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AnnotationEditorEditorModeChangedEvent, IPDFViewerApplication, PDFNotificationService, ResponsiveVisibility, getVersionSuffix, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
-import { BravoNameEventBusCustom } from 'src/app/bravo-pdf-webViewer/shared/events';
+import { EAnnotationEditorType } from 'src/app/bravo-pdf-webViewer/shared/data-type';
+import { BravoNameEventBusCustom, WindowMouseDownEvent } from 'src/app/bravo-pdf-webViewer/shared/events';
 import { BravoPdfSignatureTool } from '../signature-tool/signature-tool.component';
 
 @Component({
@@ -69,8 +70,8 @@ export class PdfStampEditorDropdownComponent implements OnInit, AfterViewInit, O
   }
 
   public onHandleWindowMouseDown = this._handleWindowMouseDown.bind(this);
-  private _handleWindowMouseDown(pPayload: any) {
-    if (!this._elRef.nativeElement.contains(pPayload['value'])) {
+  private _handleWindowMouseDown(pPayload: WindowMouseDownEvent) {
+    if (pPayload.event.target && !this._elRef.nativeElement.contains(pPayload.event.target as Element)) {
       this.isToggleDropdown = false;
       this._cd.detectChanges();
     }
@@ -78,8 +79,8 @@ export class PdfStampEditorDropdownComponent implements OnInit, AfterViewInit, O
 
   public onHandleAnnotationEditorModeChanged = this._handleAnnotationEditorModeChanged.bind(this);
   private _handleAnnotationEditorModeChanged({ mode }: AnnotationEditorEditorModeChangedEvent) {
-    this.isSelected = mode === 13
-    this.isToggleDropdown = mode === 13;
+    this.isSelected = mode === EAnnotationEditorType.STAMP
+    this.isToggleDropdown = mode === EAnnotationEditorType.STAMP;
     this._cd.markForCheck();
   }
 }

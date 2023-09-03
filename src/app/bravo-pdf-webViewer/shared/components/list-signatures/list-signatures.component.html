@@ -1,6 +1,5 @@
 <div class="tab-panel">
-  <div *ngFor="let item of signaturesAvailable$ | async" class="signature-row" id="editorStampListImage"
-    data-l10n-id="editor_stamp_list_image">
+  <div *ngFor="let item of signaturesAvailable$ | async" class="signature-row" id="editorStampListImage">
     <button class="signature-row-content" (click)="onClickAddSignatureBtn(imgEl)">
       <img src="{{item}}" alt="" #imgEl>
     </button>

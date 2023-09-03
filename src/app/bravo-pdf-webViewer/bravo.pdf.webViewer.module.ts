@@ -6,10 +6,11 @@ import { BravoPdfEditorTools, BravoPdfSignatureTool, PdfStampEditorDropdownCompo
 
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { BravoPdfShyButton } from './shared/components/bravoPdfShy/bravo.pdfShy.component';
+
 import { BravoDrawingApp } from './shared/components/drawing-app/drawing-app.component';
-import { BravoListSignatures } from './shared/components/list-signatures/list-signatures.component';
+
 import { HttpClientModule } from '@angular/common/http';
+import { BravoListSignatures, BravoPdfShyButton } from './shared/components';
 
 
 @NgModule({

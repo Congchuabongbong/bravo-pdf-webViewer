@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { IPDFViewerApplication, PDFNotificationService } from 'ngx-extended-pdf-viewer';
-import { BehaviorSubject, Subject, of, switchMap, takeUntil } from 'rxjs';
-import { BravoNameEventBusCustom, SavedEditorStampEvent } from '../../events';
+import { Subject, combineLatest, concat, of, shareReplay, switchMap, takeUntil } from 'rxjs';
 import { EAnnotationEditorParamsType } from '../../data-type';
+import { BravoNameEventBusCustom, SavedEditorStampEvent } from '../../events';
 
-const _fakeSource = 'https://api.slingacademy.com/v1/sample-data/photos?limit=10';
+const _fakeSource = 'https://api.slingacademy.com/v1/sample-data/photos?limit=3';
 @Component({
   selector: 'bravo-list-signatures',
   templateUrl: './list-signatures.component.html',
@@ -21,16 +21,17 @@ export class BravoListSignatures implements OnInit, OnDestroy {
 
   public unSubAction$ = this._unSubSubject.asObservable();
 
-  private _signatureAddSubject = new BehaviorSubject<string>('');
+  private _signatureAddSubject = new Subject<string>();
 
   public signatureAddAction$ = this._signatureAddSubject.asObservable().pipe(takeUntil(this.unSubAction$));
 
   public signaturesAvailable$ = this._http.get(_fakeSource).pipe(
     takeUntil(this.unSubAction$),
+    shareReplay(1),
     switchMap(
       (data: any) => {
         const images = data['photos'].map((item: any) => item['url'])
-        return of(images)
+        return concat(of(images), combineLatest([of(images), this.signatureAddAction$]).pipe(switchMap(([imgs, img]) => of([...imgs, img]))));
       }
     )
   );
@@ -62,13 +63,11 @@ export class BravoListSignatures implements OnInit, OnDestroy {
 
   public onSavedStampEditor = this._handleSavedStampEditor.bind(this);
   private _handleSavedStampEditor({ value }: SavedEditorStampEvent) {
-    console.warn(value);
     //?case base 64
     if (typeof value === 'string')
       this.addSignatureToList(value)
     else if (value instanceof ImageBitmap) { //?bitmap
       const _zBase64Str = this._getSrcImageFromImageBitmap(value);
-      console.warn(_zBase64Str);
       this.addSignatureToList(_zBase64Str);
     }
   }

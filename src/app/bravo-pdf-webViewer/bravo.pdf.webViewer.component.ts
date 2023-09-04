@@ -5,7 +5,6 @@ import { PdfToolbarCustom } from './pdf-toolbar/toolbar/bravo.toolbar.custom';
 
 import { BravoPdfSignatureTool } from './pdf-toolbar/tools';
 import { BravoNameEventBusCustom } from './shared/events';
-import { BravoPDFToolsNotificationService } from './shared/services/bravoPdfTool.notification.service';
 pdfDefaultOptions.assetsFolder = 'bleeding-edge';
 @Component({
   selector: 'bravo-pdf-webViewer',
@@ -27,7 +26,7 @@ export class BravoPdfWebViewer implements OnInit, AfterViewInit, OnDestroy {
 
   public pdfViewerApp!: IPDFViewerApplication;
   //*Constructor here:
-  constructor(private _notificationService: PDFNotificationService, private _cd: ChangeDetectorRef, private _toolsNotify: BravoPDFToolsNotificationService) {
+  constructor(private _notificationService: PDFNotificationService, private _cd: ChangeDetectorRef,) {
     this._notificationService.onPDFJSInit.pipe(takeUntil(this._unSubObservables$)).subscribe(this.onPdfJsInit.bind(this));
   }
   //*life cycle here:

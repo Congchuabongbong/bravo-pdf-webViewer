@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { IPDFViewerApplication, PDFNotificationService } from 'ngx-extended-pdf-viewer';
+import { IPDFViewerApplication, NgxExtendedPdfViewerService, PDFNotificationService } from 'ngx-extended-pdf-viewer';
 import { BravoDrawingApp, CanvasSource } from 'src/app/bravo-pdf-webViewer/shared/components/drawing-app/drawing-app.component';
 import { EAnnotationEditorParamsType } from 'src/app/bravo-pdf-webViewer/shared/data-type';
 import { BravoNameEventBusCustom, SavedEditorStampEvent } from 'src/app/bravo-pdf-webViewer/shared/events';
@@ -28,12 +28,9 @@ export class BravoPdfSignatureTool implements OnInit, AfterViewInit, OnDestroy {
   public pdfViewerApp!: IPDFViewerApplication;
 
 
-  constructor(private _elRef: ElementRef<Element>, private _cd: ChangeDetectorRef, private _notificationService: PDFNotificationService) {
+  constructor(private _elRef: ElementRef<Element>, private _cd: ChangeDetectorRef, private _notificationService: PDFNotificationService, private _ngxExService: NgxExtendedPdfViewerService) {
     const subscription = this._notificationService.onPDFJSInit.subscribe(() => {
-      this._isPdfInit = true;
-
       this.onPdfJsInit();
-
       subscription.unsubscribe();
     });
   }
@@ -50,17 +47,19 @@ export class BravoPdfSignatureTool implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onPdfJsInit() {
-
+    this.pdfViewerApp = (window as any).PDFViewerApplication;
+    this._isPdfInit = true;
   }
 
   public savedActionDrawingApp(pPayload: CanvasSource) {
     if (this._isPdfInit) {
-      this.pdfViewerApp = (window as any).PDFViewerApplication;
       createImageBitmap(pPayload.asBlob).then((bitmap) => {
         this.pdfViewerApp.eventBus.dispatch('switchannotationeditorparams', {
+          source: this,
           type: EAnnotationEditorParamsType.CREATE,
           value: bitmap
         });
+        //*trigger event for saved signature to list
         const _payload = {
           source: this,
           value: pPayload.asUrl
@@ -69,7 +68,6 @@ export class BravoPdfSignatureTool implements OnInit, AfterViewInit, OnDestroy {
       });
     }
     this.onCloseSignatureTool();
-    //*add to list image and save to local storage
   }
 
   public openDrawingTool() {

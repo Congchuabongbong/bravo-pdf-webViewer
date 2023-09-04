@@ -2,7 +2,6 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef
 import { PageViewModeType, ResponsiveVisibility, ScrollModeType } from 'ngx-extended-pdf-viewer';
 import { SpreadType } from 'ngx-extended-pdf-viewer/lib/options/spread-type';
 import { BravoPdfEditorTools } from '../tools';
-import { BravoPDFToolsNotificationService } from '../../shared/services/bravoPdfTool.notification.service';
 
 @Component({
   selector: 'pdf-toolbar-custom',

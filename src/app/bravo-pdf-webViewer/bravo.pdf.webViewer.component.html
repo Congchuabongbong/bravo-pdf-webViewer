@@ -1,11 +1,12 @@
+<ngx-extended-pdf-viewer #extendedPdfViewer [src]="'assets/test.pdf'" [useBrowserLocale]="true" [textLayer]="true"
+  [minifiedJSLibraries]="false" [customToolbar]="customToolbarTemp"></ngx-extended-pdf-viewer>
 <ng-template #customToolbarTemp>
-  <pdf-toolbar-custom [sidebarVisible]="extendedPdfViewer.sidebarVisible"
-    (sidebarVisibleChange)="extendedPdfViewer.sidebarVisible = $event"
+  <pdf-toolbar-custom (onToolbarLoaded)="extendedPdfViewer.onToolbarLoaded($event)"
+    [sidebarVisible]="extendedPdfViewer.sidebarVisible"
     [class.server-side-rendering]="extendedPdfViewer.serverSideRendering"
-    [customToolbar]="extendedPdfViewer.customToolbar"
     [mobileFriendlyZoomScale]="extendedPdfViewer.mobileFriendlyZoomScale"
     [(pageViewMode)]="extendedPdfViewer.pageViewMode" [primaryMenuVisible]="extendedPdfViewer.primaryMenuVisible"
-    [scrollMode]="extendedPdfViewer.scrollMode" [showPropertiesButton]="extendedPdfViewer.showPropertiesButton"
+    [scrollMode]="extendedPdfViewer.scrollMode ?? 0" [showPropertiesButton]="extendedPdfViewer.showPropertiesButton"
     [showBookModeButton]="extendedPdfViewer.showBookModeButton"
     [showDownloadButton]="extendedPdfViewer.showDownloadButton" [showDrawEditor]="extendedPdfViewer.showDrawEditor"
     [showFindButton]="extendedPdfViewer.showFindButton" [showHandToolButton]="extendedPdfViewer.showHandToolButton"
@@ -16,7 +17,7 @@
     [showPresentationModeButton]="extendedPdfViewer.showPresentationModeButton && extendedPdfViewer.pageViewMode !== 'book'"
     [showPrintButton]="extendedPdfViewer.showPrintButton && extendedPdfViewer.enablePrint"
     [showRotateButton]="extendedPdfViewer.showRotateButton"
-    [showSecondaryToolbarButton]="extendedPdfViewer.showSecondaryToolbarButton && !extendedPdfViewer.hideKebabMenuForSecondaryToolbar"
+    [showSecondaryToolbarButton]="extendedPdfViewer.showSecondaryToolbarButton && !extendedPdfViewer.service.secondaryMenuIsEmpty"
     [showSidebarButton]="extendedPdfViewer.showSidebarButton"
     [showSinglePageModeButton]="extendedPdfViewer.showSinglePageModeButton"
     [showSpreadButton]="extendedPdfViewer.showSpreadButton" [showStampEditor]="extendedPdfViewer.showStampEditor"
@@ -26,8 +27,6 @@
     [showZoomButtons]="extendedPdfViewer.showZoomButtons && extendedPdfViewer.pageViewMode !== 'book'"
     [spread]="extendedPdfViewer.spread" [textLayer]="extendedPdfViewer.textLayer"
     [toolbarMarginTop]="extendedPdfViewer.toolbarMarginTop" [toolbarWidth]="extendedPdfViewer.toolbarWidth"
-    [zoomLevels]="extendedPdfViewer.zoomLevels"
-    [findbarVisible]="extendedPdfViewer.findbarVisible"></pdf-toolbar-custom>
+    [zoomLevels]="extendedPdfViewer.zoomLevels" [findbarVisible]="extendedPdfViewer.findbarVisible">
+  </pdf-toolbar-custom>
 </ng-template>
-<ngx-extended-pdf-viewer #extendedPdfViewer [src]="'assets/test.pdf'" [useBrowserLocale]="true" [textLayer]="true"
-  [minifiedJSLibraries]="false"></ngx-extended-pdf-viewer>

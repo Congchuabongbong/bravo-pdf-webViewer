@@ -1,7 +1,6 @@
 <div id="toolbarViewer">
   <div id="toolbarViewerLeft">
-    <pdf-toggle-sidebar [show]="showSidebarButton" [sidebarVisible]="sidebarVisible"
-      (showChange)="updateSidebarVisible($event)"></pdf-toggle-sidebar>
+    <pdf-toggle-sidebar [show]="showSidebarButton" [sidebarVisible]="sidebarVisible"></pdf-toggle-sidebar>
     <pdf-find-button [showFindButton]="showFindButton" [textLayer]="textLayer"
       [findbarVisible]="findbarVisible"></pdf-find-button>
     <pdf-paging-area [showPagingButtons]="showPagingButtons"></pdf-paging-area>
@@ -25,7 +24,7 @@
     <pdf-book-mode [show]="showBookModeButton" [pageViewMode]="pageViewMode"
       (pageViewModeChange)="updatePageViewMode($event)" [scrollMode]="scrollMode"></pdf-book-mode>
     <pdf-hand-tool [showHandToolButton]="showHandToolButton"></pdf-hand-tool>
-    <pdf-select-tool [showSelectToolButton]="showSelectToolButton"></pdf-select-tool>
+    <pdf-select-tool [showSelectToolButton]="showHandToolButton"></pdf-select-tool>
     <pdf-rotate-page [showRotateButton]="showRotateButton" [clockwise]="true" [counterClockwise]="false">
     </pdf-rotate-page>
     <pdf-rotate-page [showRotateButton]="showRotateButton" [clockwise]="false" [counterClockwise]="true">
@@ -38,5 +37,6 @@
       [showStampEditor]="showStampEditor"></bravo-pdf-editor>
     <pdf-toggle-secondary-toolbar [showSecondaryToolbarButton]="showSecondaryToolbarButton">
     </pdf-toggle-secondary-toolbar>
+
   </div>
 </div>

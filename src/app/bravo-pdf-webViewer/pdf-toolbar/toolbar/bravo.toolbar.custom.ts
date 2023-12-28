@@ -14,7 +14,14 @@ export class PdfToolbarCustom implements OnInit {
   @ViewChild('bravoEditorTools') bravoEditorTools!: BravoPdfEditorTools;
 
   @Input()
-  public customToolbar: TemplateRef<any> | undefined;
+  private _customToolbar: TemplateRef<any> | undefined;
+  public get customToolbar(): TemplateRef<any> | undefined {
+    return this._customToolbar;
+  }
+  public set customToolbar(value: TemplateRef<any> | undefined) {
+    this._customToolbar = value;
+    this.onToolbarLoaded.emit(this._elementRef.nativeElement.getElementsByClassName('toolbar')[0] as HTMLElement);
+  }
 
   @Input()
   public mobileFriendlyZoomScale = 1;
@@ -124,6 +131,9 @@ export class PdfToolbarCustom implements OnInit {
   @Input()
   public findbarVisible = false;
 
+  @Output()
+  public onToolbarLoaded = new EventEmitter<HTMLElement>();
+
 
   @Output() initialized = new EventEmitter<this>();
 
@@ -140,12 +150,12 @@ export class PdfToolbarCustom implements OnInit {
   }
 
   ngAfterViewInit(): void {
-
+    this.onToolbarLoaded.emit(this._elementRef.nativeElement.getElementsByClassName('toolbar')[0] as HTMLElement);
   }
 
   public updatePageViewMode(pageViewMode: PageViewModeType): void {
     if (pageViewMode) {
-      console.log(pageViewMode);
+
       this.pageViewModeChange.emit(pageViewMode);
       this.pageViewMode = pageViewMode;
     }

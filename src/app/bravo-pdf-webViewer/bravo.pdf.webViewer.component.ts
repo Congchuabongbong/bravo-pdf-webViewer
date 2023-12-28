@@ -1,22 +1,22 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { IPDFViewerApplication, NgxExtendedPdfViewerComponent, PDFNotificationService, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { IPDFViewerApplication, NgxExtendedPdfViewerComponent, PDFNotificationService } from 'ngx-extended-pdf-viewer';
 import { Subject, takeUntil } from 'rxjs';
 import { PdfToolbarCustom } from './pdf-toolbar/toolbar/bravo.toolbar.custom';
 
 import { BravoPdfSignatureTool } from './pdf-toolbar/tools';
 import { BravoNameEventBusCustom } from './shared/events';
-pdfDefaultOptions.assetsFolder = 'bleeding-edge';
+
 @Component({
   selector: 'bravo-pdf-webViewer',
   templateUrl: './bravo.pdf.webViewer.component.html',
   styleUrls: ['./bravo.pdf.webViewer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 
 export class BravoPdfWebViewer implements OnInit, AfterViewInit, OnDestroy {
   //*Props here:
   @ViewChild('extendedPdfViewer') extendedPdfViewer!: NgxExtendedPdfViewerComponent;
-  @ViewChild('customToolbarTemp', { read: TemplateRef }) customToolbarRef!: TemplateRef<Element>;
+
 
   private _unSubObservablesSubject: Subject<void> = new Subject();
   private _unSubObservables$ = this._unSubObservablesSubject.asObservable();
@@ -35,10 +35,9 @@ export class BravoPdfWebViewer implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public ngAfterViewInit(): void {
-    this.extendedPdfViewer.customToolbar = this.customToolbarRef;
     this.extendedPdfViewer.textLayer = true;
-    this.extendedPdfViewer.showHandToolButton = true;
-    this._cd.markForCheck();
+    this.extendedPdfViewer.showHandToolButton = true
+
   }
 
   public ngOnDestroy(): void {
